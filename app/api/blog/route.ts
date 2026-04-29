@@ -4,14 +4,20 @@ import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 
+async function sessionCheck() {
+  const session = await getServerSession(authOptions);
+
+  if(!session){
+    throw new Error("UNAUTHORIZED");
+  }
+  return session;
+}
 
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
 
-  if(!session){
-  return NextResponse.json({error: "Unauthorized"}, {status:401});
-}
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
 
   const blogsData = await prisma.blog.findMany({
@@ -24,15 +30,10 @@ export async function GET(req: NextRequest) {
   });
 }
 
-
-
-
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
 
-if(!session){
-  return NextResponse.json({error: "Unauthorized"}, {status:401});
-}
+if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const data = await req.json();
 
@@ -46,7 +47,7 @@ if(!session){
     },
   });
   return NextResponse.json({
-    message: "you've been signed up",
+    message: "Blogs created",
     blog
   });
 }
@@ -54,9 +55,7 @@ if(!session){
 export async function PUT(req: NextRequest) {
   const session = await getServerSession(authOptions)
 
-if(!session){
-  return NextResponse.json({error: "Unauthorized"}, {status:401});
-}
+if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const data = await req.json();
 
@@ -84,9 +83,7 @@ if(!session){
 export async function DELETE(req: NextRequest) {
   const session = await getServerSession(authOptions)
 
-if(!session){
-  return NextResponse.json({error: "Unauthorized"}, {status:401});
-}
+if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
 
   const data = await req.json();
